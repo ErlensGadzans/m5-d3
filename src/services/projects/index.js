@@ -35,15 +35,38 @@ router.get("/", (req, res, next) => {
 //   return newProject;
 // };
 
-router.post("/", (req, res, nex) => {
-  const newProject = req.body;
-  const projectsArray = readDatabase();
+router.post(
+  "/",
+  [
+    check("Name")
+      .isLength({ min: 4 })
+      .withMessage("No way! Name too short!")
+      .exists(),
 
-  newProject.ID = uniqid();
-  projectsArray.push(newProject);
-  fs.writeFileSync(projectsFilePath, JSON.stringify(projectsArray));
-  res.status(201).send(newProject);
-});
+    check("Decription")
+      .isLength({ min: 2 })
+      .withMessage("Description is too short!")
+      .exists(),
+  ],
+  (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const err = new Error();
+      err.message = errors;
+      err.httpStatusCode = 400;
+      next(err);
+    } else {
+      const newProject = req.body;
+      const projectsArray = readDatabase();
+
+      newProject.ID = uniqid();
+      projectsArray.push(newProject);
+      fs.writeFileSync(projectsFilePath, JSON.stringify(projectsArray));
+      res.status(201).send(newProject);
+    }
+  }
+);
 
 const updateProject = (id, update) => {
   const projectsArray = readDatabase();
