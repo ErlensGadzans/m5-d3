@@ -27,8 +27,8 @@ server.use("/problems", problematicRoutes);
 server.use(notFoundHandler);
 server.use(unauthorizedHandler);
 server.use(forbiddenHandler);
-server.use(catchAllHandler);
 server.use(badRequestHandler);
+server.use(catchAllHandler);
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
