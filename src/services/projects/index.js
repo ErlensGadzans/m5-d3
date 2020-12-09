@@ -44,7 +44,7 @@ router.post(
       .withMessage("No way! Name too short!")
       .exists(),
 
-    check("Decription")
+    check("Description")
       .isLength({ min: 2 })
       .withMessage("Description is too short!")
       .exists(),
