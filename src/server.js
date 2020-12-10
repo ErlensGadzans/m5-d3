@@ -1,7 +1,9 @@
 const express = require("express");
 const listEndpoints = require("express-list-endpoints");
+const { join } = require("path");
 const projectsRouter = require("./services/projects");
 const problematicRoutes = require("./services/problematicRoutes");
+const filesRouter = require("./services/files");
 const {
   notFoundHandler,
   unauthorizedHandler,
@@ -13,6 +15,7 @@ const {
 const server = express();
 
 const port = process.env.PORT || 3007;
+const publicFolderPath = join(__dirname, "../public");
 
 const loggerMiddleware = (req, res, next) => {
   next();
@@ -20,9 +23,11 @@ const loggerMiddleware = (req, res, next) => {
 
 server.use(express.json());
 server.use(loggerMiddleware);
+server.use(express.static(publicFolderPath));
 
 server.use("/projects", projectsRouter);
 server.use("/problems", problematicRoutes);
+server.use("/files", filesRouter);
 
 server.use(notFoundHandler);
 server.use(unauthorizedHandler);
