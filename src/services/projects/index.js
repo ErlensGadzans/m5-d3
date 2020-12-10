@@ -39,12 +39,12 @@ router.get("/", (req, res, next) => {
 router.post(
   "/",
   [
-    check("Name")
+    check("name")
       .isLength({ min: 4 })
       .withMessage("No way! Name too short!")
       .exists(),
 
-    check("Description")
+    check("description")
       .isLength({ min: 2 })
       .withMessage("Description is too short!")
       .exists(),
@@ -69,23 +69,29 @@ router.post(
   }
 );
 
-const updateProject = (id, update) => {
+router.get("/:id", (req, res, next) => {
   const projectsArray = readDatabase();
+  const project = projectsArray.find((project) => project.ID === req.params.id);
+  res.status(project ? 200 : 404).send(project || { message: "Not found!" });
+});
 
-  const newProjectsArray = projectsArray.filter((project) => project.ID !== id);
-  const modifiedProject = update;
-  modifiedProject.ID = id;
-  newProjectsArray.push(modifiedProject);
-  fs.writeFileSync(projectsFilePath, JSON.stringify(newProjectsArray));
-  return modifiedProject;
-};
+// const updateProject = (id, update) => {
+//   const projectsArray = readDatabase();
 
-const deleteProject = (id) => {
-  const projectsArray = readDatabase();
+//   const newProjectsArray = projectsArray.filter((project) => project.ID !== id);
+//   const modifiedProject = update;
+//   modifiedProject.ID = id;
+//   newProjectsArray.push(modifiedProject);
+//   fs.writeFileSync(projectsFilePath, JSON.stringify(newProjectsArray));
+//   return modifiedProject;
+// };
 
-  const newProjectsArray = projectsArray.filter((project) => project.ID !== id);
-  fs.writeFileSync(projectsFilePath, JSON.stringify(newProjectsArray));
-  return id;
-};
+// const deleteProject = (id) => {
+//   const projectsArray = readDatabase();
+
+//   const newProjectsArray = projectsArray.filter((project) => project.ID !== id);
+//   fs.writeFileSync(projectsFilePath, JSON.stringify(newProjectsArray));
+//   return id;
+// };
 
 module.exports = router;

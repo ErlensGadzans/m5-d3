@@ -20,8 +20,9 @@ const forbiddenHandler = (err, req, res, next) => {
 };
 
 const catchAllHandler = (err, req, res, next) => {
+  console.log(err);
   if (!res.headersSent) {
-    res.status(err.httpStatusCode || 500).send("Generic Server Error");
+    res.status(err.httpStatusCode || 500).send(err.message);
   }
 };
 
